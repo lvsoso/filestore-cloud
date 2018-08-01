@@ -1,0 +1,2 @@
+# distributed-fileserver
+基于golang实现的一种分布式文件上传与存储服务
