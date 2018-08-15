@@ -9,11 +9,24 @@ import (
 )
 
 const (
-	upload_path string = "/tmp/"
+	upload_path string = "/tmp/files/"
 )
 
 func load_success(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Upload finished!")
+}
+
+func file_list(w http.ResponseWriter, r *http.Request) {
+	flist, err := ioutil.ReadDir(upload_path)
+	if err != nil {
+		io.WriteString(w, "Get filelist error.")
+	} else {
+		files := ""
+		for _, v := range flist {
+			files += (v.Name() + "<br>")
+		}
+		io.WriteString(w, files)
+	}
 }
 
 func uploadHandle(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +65,7 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Println("to start upload server...")
 	http.HandleFunc("/success", load_success)
+	http.HandleFunc("/filelist", file_list)
 	http.HandleFunc("/upload", uploadHandle)
 
 	err := http.ListenAndServe(":8088", nil)
