@@ -3,42 +3,71 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
-    "io/ioutil"
+
+	futil "github.com/moxiaomomo/distributed-fileserver/util"
 )
 
 const (
 	upload_path string = "/tmp/files/"
 )
 
-func load_success(w http.ResponseWriter, r *http.Request) {
+func uploadSucHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Upload finished!")
 }
 
-func file_list(w http.ResponseWriter, r *http.Request) {
+func fileListHandler(w http.ResponseWriter, r *http.Request) {
 	flist, err := ioutil.ReadDir(upload_path)
 	if err != nil {
 		io.WriteString(w, "Get filelist error.")
 	} else {
 		files := ""
 		for _, v := range flist {
-			files += (v.Name() + "<br>")
+			files += (v.Name() + "&#10;")
 		}
 		io.WriteString(w, files)
 	}
 }
 
-func uploadHandle(w http.ResponseWriter, r *http.Request) {
+func fileDelHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	filehash := r.Form.Get("filehash")
+
+	flist, err := ioutil.ReadDir(upload_path)
+	if err != nil {
+		io.WriteString(w, "Get filelist error.")
+	} else {
+		for _, v := range flist {
+			file, err := os.Open(upload_path + v.Name())
+			if err != nil {
+				continue
+			}
+
+			tmpSha1 := futil.FileSha1(file)
+			file.Close()
+
+			fmt.Println(v.Name() + " " + tmpSha1 + "  " + filehash)
+			if tmpSha1 == filehash {
+				os.Remove(upload_path + v.Name())
+			}
+		}
+		io.WriteString(w, "File removed.")
+	}
+}
+
+func fileUploadHandle(w http.ResponseWriter, r *http.Request) {
 	// GET 方法获取上传主页
 	if r.Method == "GET" {
-        b, err := ioutil.ReadFile("./static/view/index.html")
-        if err != nil {
-            return
-        }
+		b, err := ioutil.ReadFile("./static/view/index.html")
+		if err != nil {
+			return
+		}
 		io.WriteString(w, string(b))
 
-    // POST 方法获取文件上传内容
+		// POST 方法获取文件上传内容
 	} else {
 		file, head, err := r.FormFile("file")
 		if err != nil {
@@ -64,9 +93,10 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Println("to start upload server...")
-	http.HandleFunc("/success", load_success)
-	http.HandleFunc("/filelist", file_list)
-	http.HandleFunc("/upload", uploadHandle)
+	http.HandleFunc("/file/upload/success", uploadSucHandler)
+	http.HandleFunc("/file/list", fileListHandler)
+	http.HandleFunc("/file/upload", fileUploadHandle)
+	http.HandleFunc("/file/delete", fileDelHandler)
 
 	err := http.ListenAndServe(":8088", nil)
 	if err != nil {
