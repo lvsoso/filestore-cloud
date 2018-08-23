@@ -1,4 +1,4 @@
-create database fileserver default character set utf8;
+create database fileserver DEFAULT character set utf8;
 
 CREATE TABLE `tbl_file` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

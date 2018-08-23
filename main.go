@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	hdl "github.com/moxiaomomo/distributed-fileserver/handler"
 	futil "github.com/moxiaomomo/distributed-fileserver/util"
 )
 
@@ -97,6 +98,8 @@ func main() {
 	http.HandleFunc("/file/list", fileListHandler)
 	http.HandleFunc("/file/upload", fileUploadHandle)
 	http.HandleFunc("/file/delete", fileDelHandler)
+
+	http.HandleFunc("/user/signup", hdl.RegisterHandler)
 
 	err := http.ListenAndServe(":8088", nil)
 	if err != nil {

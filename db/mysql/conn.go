@@ -12,7 +12,7 @@ import (
 var db *sql.DB
 
 func init() {
-	db, _ = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/test?charset=utf8")
+	db, _ = sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/fileserver?charset=utf8")
 	db.SetMaxOpenConns(2000)
 	db.SetMaxIdleConns(1000)
 	err := db.Ping()
@@ -20,6 +20,10 @@ func init() {
 		log.Fatal("initialize mysql connection failed, err:" + err.Error())
 		os.Exit(1)
 	}
+}
+
+func DBConn() *sql.DB {
+	return db
 }
 
 // 封装结果集
