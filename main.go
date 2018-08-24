@@ -100,6 +100,7 @@ func main() {
 	http.HandleFunc("/file/delete", fileDelHandler)
 
 	http.HandleFunc("/user/signup", hdl.RegisterHandler)
+	http.HandleFunc("/user/signin", hdl.LoginHandler)
 
 	err := http.ListenAndServe(":8088", nil)
 	if err != nil {

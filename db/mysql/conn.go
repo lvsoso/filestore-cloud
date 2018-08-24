@@ -27,11 +27,15 @@ func DBConn() *sql.DB {
 }
 
 // 封装结果集
-func RowResult(querySQL string) map[string]string {
+func RowResultBySQL(querySQL string) []map[string]interface{} {
 	rows, err := db.Query(querySQL)
 	defer rows.Close()
 	checkErr(err)
 
+	return ParseRows(rows)
+}
+
+func ParseRows(rows *sql.Rows) []map[string]interface{} {
 	columns, _ := rows.Columns()
 	scanArgs := make([]interface{}, len(columns))
 	values := make([]interface{}, len(columns))
@@ -39,19 +43,21 @@ func RowResult(querySQL string) map[string]string {
 		scanArgs[j] = &values[j]
 	}
 
-	record := make(map[string]string)
+	record := make(map[string]interface{})
+	records := make([]map[string]interface{}, 0)
 	for rows.Next() {
 		//将行数据保存到record字典
-		err = rows.Scan(scanArgs...)
+		err := rows.Scan(scanArgs...)
 		checkErr(err)
 
 		for i, col := range values {
 			if col != nil {
-				record[columns[i]] = string(col.([]byte))
+				record[columns[i]] = col
 			}
 		}
+		records = append(records, record)
 	}
-	return record
+	return records
 }
 
 func checkErr(err error) {
