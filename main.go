@@ -94,13 +94,14 @@ func fileUploadHandle(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Println("to start upload server...")
-	http.HandleFunc("/file/upload/success", uploadSucHandler)
-	http.HandleFunc("/file/list", fileListHandler)
-	http.HandleFunc("/file/upload", fileUploadHandle)
-	http.HandleFunc("/file/delete", fileDelHandler)
 
 	http.HandleFunc("/user/signup", hdl.RegisterHandler)
 	http.HandleFunc("/user/signin", hdl.LoginHandler)
+
+	http.HandleFunc("/file/upload/success", hdl.AccessAuth(uploadSucHandler))
+	http.HandleFunc("/file/list", hdl.AccessAuth(fileListHandler))
+	http.HandleFunc("/file/upload", hdl.AccessAuth(fileUploadHandle))
+	http.HandleFunc("/file/delete", hdl.AccessAuth(fileDelHandler))
 
 	err := http.ListenAndServe(":8088", nil)
 	if err != nil {

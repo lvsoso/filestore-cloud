@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	dblayer "github.com/moxiaomomo/distributed-fileserver/db"
@@ -14,10 +15,19 @@ const (
 	token_salt = "_test2"
 )
 
-func genLoginToken(user string) string {
+func GenLoginToken(user string) string {
 	ts := fmt.Sprintf("%x", time.Now().Unix())
 	rstr := util.MD5([]byte(user + ts + token_salt))
 	return rstr + ts[:8]
+}
+
+func IsTokenExpired(token string) bool {
+	if tsIn, err := strconv.ParseInt(token[len(token)-9:len(token)-1], 16, 32); err == nil {
+		return false
+	} else if time.Now().Unix()-tsIn > 86400 {
+		return false
+	}
+	return true
 }
 
 // handle register
@@ -56,7 +66,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := dblayer.UserLogin(phone, enc_pwd)
 	if res {
-		token := genLoginToken(phone)
+		token := GenLoginToken(phone)
 		res = dblayer.UserUpdateToken(phone, token)
 		if res {
 			msg := fmt.Sprintf("{\"code\":0,\"msg\":\"user login succeeded.\",\"token\":\"%s\"}", token)

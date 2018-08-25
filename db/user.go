@@ -55,3 +55,18 @@ func UserUpdateToken(phone string, token string) bool {
 	}
 	return false
 }
+
+func TokenValid(phone string, token string) bool {
+	stmt, _ := mydb.DBConn().Prepare("select 1 from tbl_user_token where user_id=? and token=? limit 1")
+	defer stmt.Close()
+
+	rows, err := stmt.Query(phone, token)
+	if err != nil {
+		log.Printf("query token error: %v\n", err)
+		return false
+	} else if rows == nil || !rows.Next() {
+		return false
+	}
+
+	return true
+}
