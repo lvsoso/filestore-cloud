@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	hdl "github.com/moxiaomomo/distributed-fileserver/handler"
+	hdl "github.com/moxiaomomo/filestore-cloud/handler"
 )
 
 func main() {

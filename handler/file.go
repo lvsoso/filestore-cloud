@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	futil "github.com/moxiaomomo/distributed-fileserver/util"
+	futil "github.com/moxiaomomo/filestore-cloud/util"
 )
 
 const (

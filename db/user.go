@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 
-	mydb "github.com/moxiaomomo/distributed-fileserver/db/mysql"
+	mydb "github.com/moxiaomomo/filestore-cloud/db/mysql"
 )
 
 func UserRegister(phone string, pwd string) bool {

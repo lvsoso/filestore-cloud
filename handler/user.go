@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	dblayer "github.com/moxiaomomo/distributed-fileserver/db"
-	"github.com/moxiaomomo/distributed-fileserver/util"
+	dblayer "github.com/moxiaomomo/filestore-cloud/db"
+	"github.com/moxiaomomo/filestore-cloud/util"
 )
 
 const (

@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	dblayer "github.com/moxiaomomo/distributed-fileserver/db"
+	dblayer "github.com/moxiaomomo/filestore-cloud/db"
 )
 
 func AccessAuth(h http.HandlerFunc) http.HandlerFunc {
