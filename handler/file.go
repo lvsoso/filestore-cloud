@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	hdl "github.com/moxiaomomo/distributed-fileserver/handler"
 	futil "github.com/moxiaomomo/distributed-fileserver/util"
 )
 
@@ -15,11 +14,11 @@ const (
 	upload_path string = "/tmp/files/"
 )
 
-func uploadSucHandler(w http.ResponseWriter, r *http.Request) {
+func UploadSucHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Upload finished!")
 }
 
-func fileListHandler(w http.ResponseWriter, r *http.Request) {
+func FileListHandler(w http.ResponseWriter, r *http.Request) {
 	flist, err := ioutil.ReadDir(upload_path)
 	if err != nil {
 		io.WriteString(w, "Get filelist error.")
@@ -32,7 +31,7 @@ func fileListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func fileDelHandler(w http.ResponseWriter, r *http.Request) {
+func FileDelHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	filehash := r.Form.Get("filehash")
@@ -59,7 +58,7 @@ func fileDelHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func fileUploadHandle(w http.ResponseWriter, r *http.Request) {
+func FileUploadHandle(w http.ResponseWriter, r *http.Request) {
 	// GET 方法获取上传主页
 	if r.Method == "GET" {
 		b, err := ioutil.ReadFile("./static/view/index.html")
@@ -90,23 +89,4 @@ func fileUploadHandle(w http.ResponseWriter, r *http.Request) {
 		}
 		http.Redirect(w, r, "/success", http.StatusFound)
 	}
-}
-
-func main() {
-	fmt.Println("to start upload server...")
-
-	http.HandleFunc("/user/signup", hdl.RegisterHandler)
-	http.HandleFunc("/user/signin", hdl.LoginHandler)
-
-	http.HandleFunc("/file/upload/success", hdl.AccessAuth(uploadSucHandler))
-	http.HandleFunc("/file/list", hdl.AccessAuth(fileListHandler))
-	http.HandleFunc("/file/upload", hdl.AccessAuth(fileUploadHandle))
-	http.HandleFunc("/file/delete", hdl.AccessAuth(fileDelHandler))
-
-	err := http.ListenAndServe(":8088", nil)
-	if err != nil {
-		fmt.Printf("failed to start server, err: %v\n", err)
-		return
-	}
-	fmt.Println("server eixted.")
 }
