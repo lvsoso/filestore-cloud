@@ -1,17 +1,1 @@
-# distributed-fileserver
-基于golang实现的一种分布式文件上传与存储服务
-
-进度：
-* [x] 简单的文件upload/download/list/delete接口测试
-* [x] mysql访问操作封装
-* [x] 用户注册/登录/token验证接口
-* [ ] 基于帐号的文件操作接口
-* [ ] 文件秒传功能
-* [ ] 文件分块上传/断点续传功能
-* [ ] 搭建及使用分布式对象存储Ceph集群
-* [ ] 使用阿里云OSS对象存储服务
-* [ ] 微服务化之服务注册中心
-* [ ] 微服务化之Docker容器部署文件上传节点
-* [ ] 微服务化之API网关(鉴权/融断/限流等)
-* [ ] 微服务化之负载均衡
-* [ ] CI/CD(持续集成)
+TODO: post some description here
